@@ -6,7 +6,7 @@ run once drawVectors.
 run once otherParameters.
 
 // Pitch control scheme pitch harder as we approach orbital velocity
-function PitchControl {
+local function PitchControl {
 	parameter
 		ship,
 		ship_speed,
@@ -19,7 +19,7 @@ function PitchControl {
 }
 
 // Ascent control scheme for ascent portion of launch
-function AscentControl {
+local function AscentControl {
 	parameter
 		target_apoapsis,
 		launch_direction,
@@ -103,7 +103,7 @@ function AscentControl {
 	return mass_rate.
 }
 
-function CruiseToCircularizationControl {
+local function CruiseToCircularizationControl {
 	parameter
 		mass_rate,
 		update_func is { },
@@ -175,7 +175,7 @@ function CruiseToCircularizationControl {
 	return circular_node.
 }
 
-function CircularizationControl {
+local function CircularizationControl {
 	parameter
 		mass_rate,
 		circular_node,
