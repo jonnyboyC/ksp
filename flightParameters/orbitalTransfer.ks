@@ -35,7 +35,7 @@ function TransferOribitAngMomentum {
 function HohmannTransferMechE {
   parameter
     start_radius,
-    finish_radius.
+    finish_radius,
     mu.
   
   return -mu / (start_radius - finish_radius).
@@ -45,7 +45,7 @@ function OrbitalVelocity {
   parameter
     start_radius,
     mech_e,
-    mu
+    mu.
 
   return sqrt(2*((mu / start_radius) + mech_e)).
 }

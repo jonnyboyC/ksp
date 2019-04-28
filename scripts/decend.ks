@@ -8,9 +8,10 @@ parameter
 local debug is true.
 
 // initialize libraries
-RunOncePath("./utilities/utils.ks").
-RunOncePath("./flightParameters/orbitalParameters.ks").
-RunOncePath("./scripts/scriptHelpers/decentControls.ks").
+RunOncePath("0:/utilities/utils.ks").
+RunOncePath("0:/flightParameters/orbitalParameters.ks").
+RunOncePath("0:/scripts/scriptHelpers/decentControls.ks").
+RunOncePath("0:/utilities/engineResources.ks").
 clearscreen.
 
 // gear off when over 300
@@ -40,8 +41,11 @@ PrintStatusWindow("decend.ks", version).
 // Console Count Down
 UpdateStatusWindowMessage("Target periapsis is: " + target_periapsis + "m").
 
-local engine_list is DeorbitControl(
+local engine_resources is EngineResources(ship).
+
+DeorbitControl(
 	target_periapsis,
+	engine_resources,
 	update_status,
 	update_status_message,
 	debug

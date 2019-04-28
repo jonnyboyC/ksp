@@ -1,14 +1,8 @@
 @lazyglobal off.
 
-function StandardVectors {
-  local draw_vectors is DrawVectors().
-  draw_vectors["add_vector"]({ return AngularMomentumShip():normalized * 10.}, Red).
-  draw_vectors["add_vector"]({ return NodeVectorShip():normalized * 10.}, Green).
-  draw_vectors["add_vector"]({ return EccentricityVectorShip():normalized * 10.}, Blue).
+RunOncePath("0:/flightParameters/orbitalParameters.ks").
 
-  return draw_vectors.
-}
-
+// display a vector relative to the current ship
 function DisplayVectorShip {
   parameter
     update_func,
@@ -27,60 +21,87 @@ function DisplayVectorShip {
   return vec.
 }
 
+// generate the standard vectors for angular momentum, node and eccentricity
+function StandardVectors {
+  local draw_vectors is DrawVectors().
+  draw_vectors["add_vector"]("h", { return AngularMomentumShip():normalized * 10.}, Red).
+  draw_vectors["add_vector"]("n", { return NodeVectorShip():normalized * 10.}, Green).
+  draw_vectors["add_vector"]("e", { return EccentricityVectorShip():normalized * 10.}, Blue).
+
+  return draw_vectors.
+}
+
+// helper functionaility to draw and show debug vectors around the current ship
 function DrawVectors {
-  local vectors_ is List().
 
-  local add_vector is {
+  // vectors being managed
+  local vec_map_ is lex().
+
+  // add a vector to the collection
+  local function add_vector {
     parameter
-      func,
-      color.
+      key,    // name to associate with vector
+      func,   // function to draw the end point of the vector
+      color.  // color of the vector
 
+    // initial vector draw
     local vec is VecDraw(
       V(0, 0, 0),
       func(),
       color,     
-      "", 
+      key, 
       1.0,
-      TRUE,
+      true,
       0.2
     ).
+
+    // set vector updater to func delegate
     set vec:vecUpdater to func@.
-    vectors_:add(vec).
+
+    // add to collection
+    vec_map_:add(key, vec).
   }.
 
-  local remove is {
+  // remove a vector from the manager
+  local function remove {
     parameter
-      index.
+      key.
 
-    vectors_:remove(index).
-    updates_:remove(index).
-    colors_:remove(index).
+    local vec is vec_map_[key].
+    set vec:vecUpdater to donothing. 
+    vec_map_:remove(key).
   }.
 
-  local update is {
-    for vec in vectors_ {
-    }
-  }.
-
-  local show is {
-    for vec in vectors_ {
+  // show all vectors
+  local function show {
+    for vec in vec_map_:values {
       set vec:show to true.
     }
   }.
 
-  local hide is {
-    for vec in vectors_ {
+  // hid all vectors
+  local function hide {
+    for vec in vec_map_:values {
       set vec:show to false.
     }
   }.
+
+  // clear all vectors
+  local function clear {
+    for vec in vec_map_:values {
+      set vec:vecUpdater to donothing. 
+    }
+
+    vec_map_:clear().
+  }
 
   local instance is lexicon().
 
   instance:add("add_vector", add_vector@).
   instance:add("remove", remove@).
-  instance:add("update", update@).
   instance:add("show", show@).
   instance:add("hide", hide@).
+  instance:add("clear", clear@).
 
   return instance.
 }

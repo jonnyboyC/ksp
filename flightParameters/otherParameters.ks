@@ -1,5 +1,5 @@
 @lazyglobal off.
-RunOncePath("./utilities/constants").
+RunOncePath("0:/utilities/constants").
 
 function EstimateCd {
   local start_time is time.
@@ -94,11 +94,11 @@ function SpeedOfSound {
 
 function CalcPressure {
   parameter
-    body,
+    curr_body,
     r_vec.
 
-  local altitude is r_vec:mag - body:radius.
-  if altitude < 0 or altitude > body:atm:height {
+  local altitude is r_vec:mag - curr_body:radius.
+  if altitude < 0 or altitude > curr_body:atm:height {
     return 0.
   }
 
@@ -107,7 +107,7 @@ function CalcPressure {
 
 function localG {
   parameter
-    ship.
+    curr_ship.
 
-  return ship:body:mu / ship:body:position:mag ^ 2.
+  return curr_ship:body:mu / curr_ship:body:position:mag ^ 2.
 }

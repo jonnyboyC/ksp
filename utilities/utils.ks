@@ -1,12 +1,13 @@
 @lazyglobal off.
-RunOncePath("./utilities/fp.ks").
+RunOncePath("0:/utilities/fp.ks").
+RunOncePath("0:/flightParameters/orbitalParameters.ks").
 
 function CountDown {
   parameter
-    time,
+    duration,
     update_status_func is { parameter message. }.
 
-  from {local til_launch is time.} until til_launch = 0 step {set til_launch to til_launch - 1.} do {
+  from {local til_launch is duration.} until til_launch = 0 step {set til_launch to til_launch - 1.} do {
     update_status_func("Countdown: " + til_launch).
     WAIT 0.2.
   }
@@ -14,7 +15,7 @@ function CountDown {
 
 function AutoStage {
   parameter
-    ship,
+    curr_ship,
     engine_list,
     stage_func.
 
@@ -29,7 +30,7 @@ function AutoStage {
     return engine_list.
   }
 
-  if ship:maxthrust = 0 {
+  if curr_ship:maxthrust = 0 {
     return stage_engines().
   }
 
@@ -52,22 +53,22 @@ function AutoChute {
 
 function DefaultDesentPeriapsis {
   parameter
-    body.
+    curr_body.
 
-  if body:atm:exists {
-		return body:atm:height * 0.5.
+  if curr_body:atm:exists {
+		return curr_body:atm:height * 0.5.
 	} else {
-	  return body:radius * -0.05.
+	  return curr_body:radius * -0.05.
 	}
 }
 
 
 function DefaultLaunchApoapsis {
   parameter
-    body.
+    curr_body.
 
-  if body:atm:exists {
-		return body:atm:height * 1.1.
+  if curr_body:atm:exists {
+		return curr_body:atm:height * 1.1.
 	} else {
 	  return 30000.
 	}
@@ -166,7 +167,7 @@ function UpdateStatusWindow {
   local apoapsis_str is round(ship:apoapsis / 1000, 1) + " km".
   local periapsis_str is round(ship:periapsis / 1000, 1) + " km".
   local inclination_str is round(ship:orbit:inclination, 2) + " deg".
-  local eccentricty_str is ToString(round(ship:orbit:eccentricity, 2)).
+  local eccentricty_str is round(ship:orbit:eccentricity, 2):toString().
   local flight_path_angle_str is round(FlightPathAngleShip(), 2) + " deg".
   local true_anomaly_str is round(TrueAnomalyShip(), 2) + " deg". 
 
@@ -187,11 +188,4 @@ function UpdateStatusWindow {
   print velocity_x_str:padright(10) at (5, 9).
   print velocity_y_str:padright(10) at (21, 9).
   print velocity_z_str:padright(10) at (36, 9).
-}
-
-function ToString {
-  parameter
-    obj.
-
-  return obj + "".
 }

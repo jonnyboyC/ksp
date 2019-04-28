@@ -26,14 +26,13 @@ function cast {
   if cast_type="Stack" {
     local stk is stack().
     local temp is stack().
-    set result to stack().
     for element in collection {
       temp:push(element).
     }
     for element in temp {
       stk:push(element).
     }
-    return l.
+    return stk.
   }
 }
 
@@ -212,7 +211,7 @@ function map_with_index {
 }
 
 // Return the max value
-function _max{ 
+function _max { 
   parameter
     lst.
 
@@ -228,7 +227,7 @@ function _max{
 }
 
 // Return the min value
-function _min{
+function _min {
   parameter 
     collection.
     
@@ -244,12 +243,12 @@ function _min{
 }
 
 // partition the list into two lists
-function partition{
+function partition {
   parameter 
     collection,
     condition.
 
-  local lst is to_lst(collection).
+  local lst is to_list(collection).
   local result is list(list(), list()).
 
   for i in lst {
@@ -286,13 +285,13 @@ function reject {
     
   local result is list().
   for element in collection {
-    if not condition(element) result:add(i).
+    if not condition(element) result:add(element).
   }
   return cast(result, collection:typename).
 }
 
 // Reverse the order of a collection
-function reverse{ 
+function reverse { 
   parameter 
     collection.
 
@@ -307,7 +306,7 @@ function reverse{
 // Fill lexicon with value
 function lex_fill {
   parameter
-    keys.
+    keys,
     fill.
 
   local result is lexicon().
@@ -315,7 +314,7 @@ function lex_fill {
     result:add(key, fill).
   }
 
-  return key.
+  return result.
 }
 
 
@@ -343,10 +342,10 @@ function sort {
   function quickSort { 
     parameter
       A,
-      low,
+      lo,
       hi.
 
-    if low < hi {
+    if lo < hi {
       local p is pt(A, lo, hi).
       quickSort(A, lo, p).
       quickSort(A, p + 1, hi).
@@ -355,11 +354,11 @@ function sort {
 
   function pt{
     parameter A,
-      low,
+      lo,
       hi.
       
     local pivot is A[lo].
-    local i is low - 1.
+    local i is lo - 1.
     local j is hi + 1.
 
     until false {
@@ -372,9 +371,9 @@ function sort {
         if condition(A[i], pivot) >= 0 break.
       }
       if i < j {
-        local switch is A[i].
+        local temp is A[i].
         set A[i] to A[j].
-        set A[j] to switch.
+        set A[j] to temp.
       } else {
         return j.
       }

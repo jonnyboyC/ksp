@@ -132,8 +132,8 @@ local function CruiseToCircularizationControl {
 
 	local burn_dv is v_f - v_0.
 	local burn is engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-	local burn_time is burn[0].
-	local burn_start is burn[1].
+	local burn_time is burn["time"].
+	local burn_start is burn["start"].
 
 	if not ship:body:atm:exists {
 		local warp_time is (eta:apoapsis - (burn_start + 60)).
@@ -154,8 +154,8 @@ local function CruiseToCircularizationControl {
 	set steering_control to circular_node:deltav.
 
 	set burn to engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-  set burn_time to burn[0].
-	set burn_start to burn[1].
+  set burn_time to burn["time"].
+	set burn_start to burn["start"].
 
 	update_status_func("Aligning to maneuver node").
 	until vAng(ship:facing:foreVector, circular_node:deltav) < 1 {
@@ -207,7 +207,7 @@ local function CircularizationControl {
 	local v_f is CircularOrbitVelocityShip().
 	local v_0 is VelocityAtApoapsisShip().
 	local burn is engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-	local burn_time is burn[1].
+	local burn_time is burn["time"].
 
 	update_status_func("Burning for " + round(burn_time, 3) + "s").
 

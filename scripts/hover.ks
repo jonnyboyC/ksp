@@ -1,5 +1,5 @@
 @lazyglobal off.
-RunOncePath("./utilities/utils").
+RunOncePath("0:/utilities/utils").
 
 local lock steering TO heading(0, 90).
 

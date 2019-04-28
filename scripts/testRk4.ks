@@ -1,7 +1,9 @@
 @lazyglobal off.
-RunOncePath("./math/rungeKutta.ks").
-RunOncePath("./flightParameters/otherParameters.ks").
+RunOncePath("0:/math/rungeKutta.ks").
+RunOncePath("0:/flightParameters/otherParameters.ks").
+RunOncePath("0:/utilities/constants.ks").
 
+// debug cosine function
 local cosine is {
   parameter
     x,
@@ -17,6 +19,7 @@ local cosine is {
   return dx.
 }.
 
+// 
 local harmonic is {
   parameter
     x,
@@ -37,20 +40,27 @@ local decend is {
     t.
 
   local dx is list().
-  local density is 1.
-  local Cd is 1.
+  local Cd is 0.001.
   dx:add(x[1]).
 
-  local gravity_acc is -(ship:body:mu * x[0]:normalized) / (x[0]:mag) ^ 2.
-  local pressure is CalcPressure(ship:body, x[0]).
+  local pos is x[0].
+  local vel is x[1].
+
+  local gravity_acc is -(ship:body:mu * pos:normalized) / (pos:mag) ^ 2.
+  local pressure is CalcPressure(ship:body, pos).
   local density is CalcDensity(pressure, Molecular_Mass[ship:body:name], ship:sensors:temp).
-  local drag_acc is -density * Cd * (x[1]:mag)^2 * x[1]:normalized / (2 * ship:mass).
-  local thrust_acc is -ship:maxThrust * x[1]:normalized / ship:mass .
+  local drag_acc is -density * Cd * (vel:mag)^2 * vel:normalized / (2 * ship:mass).
+  local thrust_acc is -ship:maxThrust * vel:normalized / ship:mass .
 
   //dx:add(gravity_acc).
-  dx:add(gravity_acc + drag_acc).
-  print "pressure: " + pressure + " density: " + density.
-  //dx:add(gravity_acc + drag_acc + thrust_acc).
+  // dx:add(gravity_acc + drag_acc).
+  print(
+    "p: " + round(pressure, 3) + 
+    " rho: " + round(density, 3) + 
+    " r: " + round(pos:mag, 3) + 
+    " v: " + round(vel:mag, 3)
+  ).
+  dx:add(gravity_acc + drag_acc + thrust_acc).
   return dx.
 }.
 

@@ -1,7 +1,8 @@
 @lazyglobal off.
-RunOncePath("./utilities/engineResources.ks").
-RunOncePath("./utilities/drawVectors.ks").
-RunOncePath("./flightParameters/otherParameters.ks").
+RunOncePath("0:/utilities/engineResources.ks").
+RunOncePath("0:/utilities/drawVectors.ks").
+RunOncePath("0:/flightParameters/otherParameters.ks").
+RunOncePath("0:/flightParameters/orbitalParameters.ks").
 
 // Pitch control scheme pitch harder as we approach orbital velocity
 function PitchControl {
@@ -21,6 +22,7 @@ function AscentControl {
 	parameter
 		target_apoapsis,
 		launch_direction,
+		engine_resources is EngineResources(ship),
 		update_func is { },
 		update_status_func is { parameter message. },
 		debug is false.
@@ -30,48 +32,56 @@ function AscentControl {
 		gear off.
 	}
 
-	local h_vec_draw is 0.
-	local n_vec_draw is 0.
-	local e_vec_draw is 0.
+	local vector_manager is 0.
 
-	// if debug draw 
+	// if debug draw vectors
 	if debug {
-		set h_vec_draw to DisplayVectorShip({ return AngularMomentumShip():normalized * 10. }, Red).
-		set n_vec_draw to DisplayVectorShip({ return NodeVectorShip():normalized * 10. }, Blue).
-		set e_vec_draw to DisplayVectorShip({ return EccentricityVectorShip():normalized * 10. }, Green).
+		set vector_manager to standardvectors().
 	}
 
-	local target_orbital_speed is CircularOrbitVelocity(target_apoapsis + ship:body:radius, ship:body:mu).
+	// determine vecloity for circular opbit at a given apoapsis
+	local target_orbital_speed is CircularOrbitVelocity(
+		target_apoapsis + ship:body:radius,
+		ship:body:mu
+	).
+
+	local pitch is 90.
 	local speed is 0.
 	local time_step is 0.1.
-	local pitch is 90.
 
-	local engine_resources is EngineResources(ship).
+	// lock ship controls
 	local throttle_control to 1.0.
 	local steering_control is heading(launch_direction, pitch).
 
-	local lock throttle to throttle_control.
-	local lock steering to steering_control.
-
-	local engine_list is 0.
-	list engines in engine_list.
+	lock throttle to throttle_control.
+	lock steering to steering_control.
 
 	// Control scheme
 	until ship:apoapsis > target_apoapsis {
+
+		// introduce control delay during majority of accent
 		if ship:apoapsis / target_apoapsis < 0.9 {
 			wait time_step.
 		}
 
+		// update status
 		update_func().
-		set speed to ship:velocity:surface:mag.
-		set engine_list to engine_resources["update_stage"](update_status_func).
+		if debug {
+			vector_manager["show"]().
+		}
 
+		set speed to ship:velocity:surface:mag.
+		engine_resources["update_stage"](update_status_func).
+
+		// if we're less than 1 / 20th total required velocity fly straight
 		if speed < target_orbital_speed:mag / 20 {
 			set steering_control to heading(launch_direction, pitch).
+
+		// else use pitch control
 		} else {
 			set pitch to PitchControl(ship, speed, target_orbital_speed:mag).
-			set steering_control to heading(launch_direction, pitch).
 
+			// minimum pitch
 			if pitch < 5 {
 				set pitch to 5.
 			}
@@ -81,58 +91,57 @@ function AscentControl {
 		wait 0.
 	}
 
+	// calculate curren mass burn rate
 	local mass_rate is engine_resources["mass_rate"]().
 
+	// set throttle to 0 and wait a tick to ensure it's applied
 	set throttle_control to 0.
 	wait 0.
 
+	// clear vectors if enabled
 	if debug {
-		set h_vec_draw:vecUpdater to DoNothing.
-		set n_vec_draw:vecUpdater to DoNothing.
-		set e_vec_draw:vecUpdater to DoNothing.
-
-		set h_vec_draw to 0.
-		set n_vec_draw to 0.
-		set e_vec_draw to 0.
+		vector_manager["clear"]().
+		set vector_manager to 0.
 	}
 
+	// unlock controls
 	unlock throttle.
 	unlock steering.
 	return mass_rate.
 }
 
+// Control scheme for cruising to circularization burn
 function CruiseToCircularizationControl {
 	parameter
 		mass_rate,
+		engine_resources is EngineResources(ship),
 		update_func is { },
 		update_status_func is { parameter message. },
 		debug is false.
 
-	local h_vec_draw is 0.
-	local n_vec_draw is 0.
-	local e_vec_draw is 0.
+	local vector_manager is 0.
 
+	// if debug draw vectors
 	if debug {
-		set h_vec_draw to DisplayVectorShip({ return AngularMomentumShip():normalized * 10. }, Red).
-		set n_vec_draw to DisplayVectorShip({ return NodeVectorShip():normalized * 10. }, Blue).
-		set e_vec_draw to DisplayVectorShip({ return EccentricityVectorShip():normalized * 10. }, Green).
+		set vector_manager to standardvectors().
 	}
 
-	local engine_resources is EngineResources(ship).
 	local throttle_control is 0.
 	local steering_control is ship:prograde.
 
-	local lock throttle to throttle_control.
-	local lock steering to steering_control.
+	lock throttle to throttle_control.
+	lock steering to steering_control.
 
-	local v_f is CircularOrbitVelocityShip().
-	local v_0 is VelocityAtApoapsisShip().
+	local v_f_vec is CircularOrbitVelocityShip().
+	local v_0_vec is VelocityAtApoapsisShip().
 
-	local burn_dv is v_f - v_0.
-	local burn is engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-	local burn_time is burn[0].
-	local burn_start is burn[1].
+	// estimate burn dv
+	local burn_dv is v_f_vec - v_0_vec.
+	local burn is engine_resources["estimate_burn"](v_f_vec, v_0_vec, mass_rate).
+	local burn_time is burn["time"].
+	local burn_start is burn["start"].
 
+	// warp near to apoapsis if no atmosphere exists
 	if not ship:body:atm:exists {
 		local warp_time is (eta:apoapsis - (burn_start + 60)).
 		WarpTo(warp_time, update_status_func).
@@ -143,88 +152,90 @@ function CruiseToCircularizationControl {
 		wait 0.
 	}
 
-	set v_f to CircularOrbitVelocityShip().
-	set v_0 to VelocityAtApoapsisShip().
+	set v_f_vec to CircularOrbitVelocityShip().
+	set v_0_vec to VelocityAtApoapsisShip().
 
-	set burn_dv to v_f - v_0.
-	add node(time:seconds + eta:apoapsis, 0, 0, burn_dv).
-	local circular_node to nextnode.
-	set steering_control to circular_node:deltav.
+	set burn_dv to v_f_vec - v_0_vec.
+	set steering_control to -burn_dv.
 
-	set burn to engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-  set burn_time to burn[0].
-	set burn_start to burn[1].
+	set burn to engine_resources["estimate_burn"](v_f_vec, v_0_vec, mass_rate).
+  set burn_time to burn["time"].
+	set burn_start to burn["start"].
 
-	update_status_func("Aligning to maneuver node").
-	until vAng(ship:facing:foreVector, circular_node:deltav) < 1 {
-		set steering_control to circular_node:deltav.
+	update_status_func("Aligning to circularization burn").
+	until vAng(ship:facing:foreVector, -burn_dv) < 1 {
+		set steering_control to -burn_dv.
 		update_func().
 		wait 0.
 	}
 
-	update_status_func("Coasting to maneuver node").
-	until circular_node:eta <= burn_start {
+	update_status_func("Coasting to burn").
+	until eta:apoapsis <= burn_start {
 		update_func().
 	}
 
+	if debug {
+		vector_manager["clear"]().
+		set vector_manager to 0.
+	}
+
+	set ship:control:pilotMainThrottle to 0.0. 
 	unlock throttle.
 	unlock steering.
-
-	return circular_node.
 }
 
 function CircularizationControl {
 	parameter
 		mass_rate,
-		circular_node,
+		engine_resources is EngineResources(ship),
 		update_func is { },
 		update_status_func is { parameter message. },
 		debug is false.
 
-	local h_vec_draw is 0.
-	local n_vec_draw is 0.
-	local e_vec_draw is 0.
+	local vector_manager is 0.
 
+	// if debug draw vectors
 	if debug {
-		set h_vec_draw to DisplayVectorShip({ return AngularMomentumShip():normalized * 10. }, Red).
-		set n_vec_draw to DisplayVectorShip({ return NodeVectorShip():normalized * 10. }, Blue).
-		set e_vec_draw to DisplayVectorShip({ return EccentricityVectorShip():normalized * 10. }, Green).
+		set vector_manager to standardvectors().
 	}
 
+	local v_f_vec is CircularOrbitVelocityShip().
+	local v_0_vec is VelocityAtApoapsisShip().
+
+	// estimate burn dv
+	local burn_dv is v_f_vec - v_0_vec.
+	local burn is engine_resources["estimate_burn"](v_f_vec, v_0_vec, mass_rate).
+	local burn_time is burn["time"].
+
 	local throttle_control is 1.0.
-	local steering_control is circular_node:deltav.
+	local steering_control is -burn_dv.
 
-	local lock throttle to throttle_control.
-	local lock steering to steering_control.
-
-	local engine_resources is EngineResources(ship).	
-	local node_vector is circular_node:deltav.
-	local engine_list is List().
-	list engines in engine_list.
-
-	local v_f is CircularOrbitVelocityShip().
-	local v_0 is VelocityAtApoapsisShip().
-	local burn is engine_resources["estimate_burn"](v_f, v_0, mass_rate).
-	local burn_time is burn[1].
+	lock throttle to throttle_control.
+	lock steering to steering_control.
 
 	update_status_func("Burning for " + round(burn_time, 3) + "s").
+	local apoapsis_0 is alt:apoapsis.
 
 	until false {
 		update_func().
-		local max_acc to ship:maxthrust / ship:mass.
-		set steering_control to circular_node:deltav.
+		set steering_control to -burn_dv.
 
-		if max_acc <> 0 {
-			set throttle_control to min(circular_node:deltav:mag / max_acc, 1).
+		if alt:periapsis > 0 {
+			set throttle_control to min(
+				0.1 + ((apoapsis_0 - alt:periapsis) / apoapsis_0),
+				1
+			).
 		}
 
-		set engine_list to engine_resources["update_stage"](update_status_func).
-
-		if vdot(node_vector, circular_node:deltav) < 0 {
-			break.
+		if debug {
+			vector_manager["show"]().
 		}
 
-		if circular_node:deltav:mag < 0.1 {
+		// stage as neccessary
+		engine_resources["update_stage"](update_status_func).
+
+		// when periapsis is more than 99% of the og apoapsis break
+		if alt:periapsis > apoapsis_0 * 0.99 {
 			break.
 		}
 
@@ -234,18 +245,15 @@ function CircularizationControl {
 	update_status_func("Circularization Complete").
 
 	set throttle_control to 0.
+	set ship:control:pilotMainThrottle to 0.0. 
+	wait 0.
 
 	if debug {
-		set h_vec_draw:vecupdater to DoNothing.
-		set n_vec_draw:vecupdater to DoNothing.
-		set e_vec_draw:vecupdater to DoNothing.
-
-		set h_vec_draw to 0.
-		set n_vec_draw to 0.
-		set e_vec_draw to 0.
+		vector_manager["clear"]().
+		set vector_manager to 0.
 	}
 
-	unlock heading.
+	unlock throttle.
 	unlock steering.
-	return engine_list.
 }
+

@@ -1,6 +1,6 @@
 @lazyglobal off.
-RunOncePath("./utilities/utils.ks").
-RunOncePath("./flightParameters/orbitalParameters.ks").
+RunOncePath("0:/utilities/utils.ks").
+RunOncePath("0:/flightParameters/orbitalParameters.ks").
 
 PrintStatusWindow("status.ks", version).
 
