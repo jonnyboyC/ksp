@@ -1,4 +1,5 @@
 @lazyglobal off.
+RunOncePath("0:/utilities/engineResources.ks").
 RunOncePath("0:/utilities/utils").
 
 local lock steering TO heading(0, 90).
@@ -8,18 +9,11 @@ local throttle_setting is 0.5.
 local Lock throttle to throttle_setting.
 local target_height is 10000.
 
-List engines in engine_list.
-
-until ship:maxthrust > 0 {
-  if AutoStage(ship, engine_list) {
-    List engines in engine_list.
-	}
-}
+local engine_resources is EngineResources(ship).
+stage.
 
 from {local t is 0.} until t > target_height step {set t to t + 1.} do {
-  if AutoStage(ship, engine_list) {
-    List engines in engine_list.
-	}
+  engine_resources["update_stage"].
 
   SET throttle_setting TO PID_throttle:update(time:seconds, alt:radar).
   set PID_throttle:setPoint to t.
@@ -34,9 +28,7 @@ local Timebase is time:seconds.
 print "Timebase" + Timebase.
 
 Until Timebase + 100 < time:seconds {
-  if AutoStage(ship, engine_list) {
-    List engines in engine_list.
-	}
+  engine_resources["update_stage"].
   set throttle_setting TO PID_throttle:update(time:seconds, alt:radar).
 
   clearscreen.

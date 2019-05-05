@@ -17,7 +17,7 @@ function AutoStage {
   parameter
     curr_ship,
     engine_list,
-    stage_func.
+    stage_func is {}.
 
   function stage_engines {
     stage.

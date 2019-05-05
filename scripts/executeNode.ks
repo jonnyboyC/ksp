@@ -20,58 +20,62 @@ print(velocityAt(ship, active_node:eta + time):orbit).
 print(active_node:deltav).
 print("velocity final: " + v_f + "velocity initial: " + v_0).
 
+local v_0_vec is velocityAt(ship, active_node:eta + time):orbit.
+local v_f_vec is v_0_vec + active_node:deltav.
+
 // calculate burn time
-local burn is engine_resources["estimate_burn"](node:deltav, velocityAt(ship, node:eta + time):orbit).
+local burn is engine_resources["estimate_burn"](v_f_vec, v_0_vec).
 print("burn duration: " + round(burn["time"], 3) + " burn start: " + round(burn["start"], 3)).
 
-local burn_start is burn[1].
+local burn_start is burn["start"].
 lock steering to steering_control.
 
 // warp to near the node
-local warp_time is (node:eta + time:seconds - (burn_start + 120)).
+local warp_time is (active_node:eta + time:seconds - (burn_start + 120)).
 WarpTo(warp_time).
 
 // make sure ship is aligned with node
-until vAng(ship:facing:foreVector, node:deltav) < 1 {
-  set steering_control to node:deltav.
+until vAng(ship:facing:foreVector, active_node:deltav) < 1 {
+  set steering_control to active_node:deltav.
   wait 0.
 }
 
 // warp very close to start of node
-set warp_time to (node:eta + time:seconds - (burn_start + 5)).
+set warp_time to (active_node:eta + time:seconds - (burn_start + 5)).
 WarpTo(warp_time).
 
 // lock throttle
-wait until node:eta <= burn_start.
+wait until active_node:eta <= burn_start.
 lock throttle to throttle_control.
 
 // control for node
 until false {
   local max_acc to ship:availableThrust / ship:mass.
-  set steering_control to node:deltav.
+  set steering_control to active_node:deltav.
 
   if max_acc <> 0 {
-    set throttle_control to min(node:deltav:mag / max_acc, 1).
+    set throttle_control to min(active_node:deltav:mag / max_acc, 1).
   }
 
   // stage if needed
   engine_resources["update_stage"]().
 
-  if vdot(node_vector, node:deltav) < 0 {
+  if vdot(node_vector, active_node:deltav) < 0 {
     break.
   }
 
-  if node:deltav:mag < 0.1 {
+  if active_node:deltav:mag < 0.1 {
     break.
   }
 
+  // wait a physics tick
   wait 0.
 }
 
 // reset controls
 set throttle_control to 0.
 
-remove node.
+remove active_node.
 unlock throttle.
 unlock steering.
 

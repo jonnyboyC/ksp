@@ -4,7 +4,7 @@ RunOncePath("0:/flightParameters/otherParameters.ks").
 RunOncePath("0:/utilities/constants.ks").
 
 // debug cosine function
-local cosine is {
+local function cosine {
   parameter
     x,
     t.
@@ -20,7 +20,7 @@ local cosine is {
 }.
 
 // 
-local harmonic is {
+local function harmonic {
   parameter
     x,
     t.
@@ -34,7 +34,7 @@ local harmonic is {
   return dx.
 }.
 
-local decend is {
+local function decend {
   parameter
     x,
     t.

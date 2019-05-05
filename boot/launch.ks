@@ -12,12 +12,12 @@ set terminal:charHeight TO 12.
 print("boot launch").
 wait 3.
 
+copyPath("0:/boot/default.ks", "1:/boot/default.ks").
+deletepath("1:/boot/launch.ks").
+set cpu:bootFilename to "/boot/default.ks".
+
 switch to 0.
 runPath("0:/scripts/launch.ks").
 
-copyPath("0:/boot/default.ks", "1:/boot/default.ks").
-deletepath("1:/boot/launch.ks").
-
 switch to 1.
-set cpu:bootFilename to "/boot/default.ks".
 SET ship:control:mainThrottle TO 0.
