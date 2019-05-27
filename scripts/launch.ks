@@ -15,16 +15,8 @@ RunOncePath("0:/utilities/engineResources.ks").
 clearscreen.
 
 // Status update function
-local update_status is {
-	UpdateStatusWindow().
-}.
-
-local update_status_message is {
-	parameter
-		message.
-
-	UpdateStatusWindowMessage(message).
-}.
+local update_status is UpdateStatusWindow@.
+local update_status_message is UpdateStatusWindowMessage@.
 
 // set launch defaults
 set target_apoapsis to target_apoapsis * 1000.

@@ -1,0 +1,6 @@
+{
+  "kos-vscode.kerbalSpaceProgramPath": "D:\\SteamLibrary\\steamapps\\common\\Kerbal Space Program\\KSP_x64.exe",
+  "kos-vscode.trace.server": {
+    "level": "info"
+  }
+}

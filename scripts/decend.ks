@@ -18,16 +18,8 @@ clearscreen.
 
 
 // Status update function
-local update_status is {
-	UpdateStatusWindow().
-}.
-
-local update_status_message is {
-	parameter
-		message.
-
-	UpdateStatusWindowMessage(message).
-}.
+local update_status is UpdateStatusWindow@.
+local update_status_message is UpdateStatusWindowMessage@.
 
 // set launch defaults
 set target_periapsis to target_periapsis * 1000.

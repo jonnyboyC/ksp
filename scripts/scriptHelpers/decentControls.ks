@@ -66,6 +66,10 @@ function LandingControl {
 
 	// pre pare to deploy parachute if atmosphere exists
 	if ship:body:atm:exists {
+		when alt:radar < ship:body:atm:height * 1.1 then {
+			kuniverse:timeWarp:cancelWarp().
+		}
+
 		when alt:radar < 500 then {
 			gear on.
 			update_status_func("Extending Landing Gear").

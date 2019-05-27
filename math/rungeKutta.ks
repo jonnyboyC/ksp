@@ -39,7 +39,7 @@ function RungeKuttaStep {
   local dx1 is diff_eq(x1, t + h * 0.5).
 
   local x2 is list().
-  local i is 0.
+  set i to 0.
   until i = x1:length { 
     x2:add(x0[i] + 0.5 * dx1[i] * h).
     set i to i + 1.
