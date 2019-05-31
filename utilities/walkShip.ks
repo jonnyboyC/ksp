@@ -1,30 +1,27 @@
+
+
 function walkShip {
-  parameter shipVessel is ship.
+  parameter
+    shipVessel is ship,
+    exec is {}.
 
   local root is shipVessel:rootPart.
-  walkShipChild(root).
+  walkShipChild(root, 0, exec).
 }
 
-local space is "  ".
+// walk children parts
+function walkShipChild {
+  parameter
+    shipPart is ship:rootpart,
+    depth is 0,
+    exec is {}.
 
-local function walkShipChild {
-  parameter shipPart, depth is 0.
-
-  local spaceDepth is "".
-  for i in range(depth) {
-    set spaceDepth to spaceDepth + space.
-  }
-
-  print(spaceDepth + "name: " + shipPart:name).
-  print(spaceDepth + "title: " + shipPart:title).
-
-  if shipPart:hasParent {
-    print(spaceDepth + "parent: " + shipPart:parent).
-  }
-
-  // wait 0.1.
-
+  exec(shipPart).
   for child in shipPart:children {
-    walkShipChild(child, depth + 1).
+    walkShipChild(child, depth + 1, exec).
   }
 }
+
+
+
+
