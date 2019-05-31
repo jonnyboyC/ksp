@@ -50,12 +50,12 @@ function MechanicalEnergyShip {
 // Mechanical Energy of a given orbit
 function MechanicalEnergy {
   parameter
-    r,
-    v,
+    radius,
+    vel,
     mu.
 
-  local vel_comp is (v ^ 2) / 2.
-  local grav_comp is mu / r.
+  local vel_comp is (vel ^ 2) / 2.
+  local grav_comp is mu / radius.
 
   return vel_comp - grav_comp.
 }

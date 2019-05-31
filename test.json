@@ -1,0 +1,182 @@
+{
+    "entries": [
+        -1,
+        {
+            "entries": [
+                "dryMass",
+                3.570499888563063,
+                "wetMass",
+                4.4904999946593307,
+                "engines",
+                {
+                    "items": [
+                        
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "ElectricCharge",
+                        150,
+                        "MonoPropellant",
+                        30,
+                        "Ablator",
+                        400
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        },
+        1,
+        {
+            "entries": [
+                "dryMass",
+                3.3200003020465374,
+                "wetMass",
+                11.320000302046537,
+                "engines",
+                {
+                    "items": [
+                        "liquidEngine2-2"
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "LiquidFuel",
+                        720,
+                        "Oxidizer",
+                        880,
+                        "ElectricCharge",
+                        800.16000000000008
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        },
+        3,
+        {
+            "entries": [
+                "dryMass",
+                15.300000049173832,
+                "wetMass",
+                63.300000049173832,
+                "engines",
+                {
+                    "items": [
+                        "liquidEngine1-2"
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "LiquidFuel",
+                        4320,
+                        "Oxidizer",
+                        5280,
+                        "ElectricCharge",
+                        0.24
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        },
+        4,
+        {
+            "entries": [
+                "dryMass",
+                4.7499999105930328,
+                "wetMass",
+                16.749999910593033,
+                "engines",
+                {
+                    "items": [
+                        "liquidEngine2",
+                        "liquidEngine2"
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "LiquidFuel",
+                        1080,
+                        "Oxidizer",
+                        1320,
+                        "ElectricCharge",
+                        0.24
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        },
+        6,
+        {
+            "entries": [
+                "dryMass",
+                4.7499999105930328,
+                "wetMass",
+                16.749999910593033,
+                "engines",
+                {
+                    "items": [
+                        "liquidEngine2",
+                        "liquidEngine2"
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "LiquidFuel",
+                        1080,
+                        "Oxidizer",
+                        1320,
+                        "ElectricCharge",
+                        0.24
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        },
+        5,
+        {
+            "entries": [
+                "dryMass",
+                4.7499999105930328,
+                "wetMass",
+                16.749999910593033,
+                "engines",
+                {
+                    "items": [
+                        "liquidEngine2",
+                        "liquidEngine2"
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.ListValue"
+                },
+                "resources",
+                {
+                    "entries": [
+                        "LiquidFuel",
+                        1080,
+                        "Oxidizer",
+                        1320,
+                        "ElectricCharge",
+                        0.24
+                    ],
+                    "$type": "kOS.Safe.Encapsulation.Lexicon"
+                }
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
+        }
+    ],
+    "$type": "kOS.Safe.Encapsulation.Lexicon"
+}

@@ -6,6 +6,7 @@ local fromJsonKey is "fromJson".
 local dryMassKey is "dryMass".
 local wetMassKey is "wetMass".
 local resourcesKey is "resources".
+local enginesKey is "engines".
 
 // generate ship resources
 function shipResources {
@@ -18,6 +19,7 @@ function shipResources {
     return lexicon(
       dryMassKey, 0,
       wetMassKey, 0,
+      enginesKey, list(),
       resourcesKey, lexicon()
     ).
   } 
@@ -31,6 +33,10 @@ function shipResources {
     set stageProperties[dryMassKey] to stageProperties[dryMassKey] + part:drymass.
     set stageProperties[wetMassKey] to stageProperties[wetMassKey] + part:wetmass.
     local stageResource is stageProperties[resourcesKey].
+
+    if part:istype("engine") {
+      stageProperties[enginesKey]:add(part:name).
+    }
 
     // add resources to the stage resources
     for resource in part:resources {

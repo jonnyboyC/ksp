@@ -1,5 +1,5 @@
 
-
+// walk the ship tree from the root node
 function walkShip {
   parameter
     shipVessel is ship,
