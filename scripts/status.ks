@@ -5,7 +5,7 @@ RunOncePath("0:/flightParameters/orbitalParameters.ks").
 PrintStatusWindow("status.ks", version).
 
 // Control scheme
-until 0 {
+until false {
 	UpdateStatusWindow().
 	wait 0.
 }

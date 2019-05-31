@@ -23,7 +23,6 @@ set target_apoapsis to target_apoapsis * 1000.
 if target_apoapsis = 0 {
   set target_apoapsis to DefaultLaunchApoapsis(ship:body).
 }
-CircularOrbitVelocity(target_apoapsis + ship:body:radius, ship:body:mu).
 
 // Print status
 PrintStatusWindow("launch.ks", version).
