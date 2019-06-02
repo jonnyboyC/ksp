@@ -1,6 +1,17 @@
 @lazyglobal off.
 
-RunOncePath("0:/flightParameters/orbitalParameters.ks").
+// require import
+if not defined import {
+	print("import not found please globally define import").
+}
+
+// For Vscode
+if false {
+  RunOncePath("0:/flightParameters/orbitalParameters.ks").
+}
+
+// import dependencies
+import("/flightParameters/orbitalParameters.ks").
 
 // display a vector relative to the current ship
 function DisplayVectorShip {

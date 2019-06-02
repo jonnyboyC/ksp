@@ -1,9 +1,9 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter path is "". RunOncePath("0:" + path).}.
+  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
 
-// Declare dependecies
+// For Vscode
 if false {
 	RunOncePath("0:/utilities/engineResources.ks").
 	RunOncePath("0:/utilities/drawVectors.ks").
@@ -16,7 +16,7 @@ import("/utilities/drawVectors.ks").
 import("/flightParameters/orbitalParameters.ks").
 
 // circularize the current craft to it's current apoapsis
-function CircularizationControl {
+function circularizationControl {
   parameter
 		mass_rate is 0,
 		engine_resources is EngineResources(ship),
@@ -24,12 +24,12 @@ function CircularizationControl {
 		update_status_func is { parameter message. },
 		debug is false.
 
-  CircularizationCoastControl(mass_rate, engine_resources, update_func, update_status_func, debug).
-  CircularizationBurnControl(mass_rate, engine_resources, update_func, update_status_func, debug).
+  circularizationCoastControl(mass_rate, engine_resources, update_func, update_status_func, debug).
+  circularizationBurnControl(mass_rate, engine_resources, update_func, update_status_func, debug).
 }
 
 // Control scheme for cruising to circularization burn
-local function CircularizationCoastControl {
+local function circularizationCoastControl {
 	parameter
 		mass_rate is 0,
 		engine_resources is EngineResources(ship),
@@ -103,7 +103,7 @@ local function CircularizationCoastControl {
 }
 
 // Control scheme for burn to circularize
-local function CircularizationBurnControl {
+local function circularizationBurnControl {
 	parameter
 		mass_rate is 0,
 		engine_resources is EngineResources(ship),

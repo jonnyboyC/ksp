@@ -1,6 +1,17 @@
 @lazyglobal off.
-RunOncePath("0:/math/newton.ks").
-RunOncePath("0:/utilities/fp.ks").
+
+parameter 
+  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
+
+// For Vscode
+if false {
+  RunOncePath("0:/math/root.ks").
+  RunOncePath("0:/utilities/fp.ks").
+}
+
+// import dependencies
+import("/math/root.ks").
+import("/utilities/fp.ks").
 
 // fuel types
 local Liquid is "LiquidFuel".
@@ -61,7 +72,6 @@ function EngineResources {
   parameter
     curr_ship. // ship to determine for
   
-  // local lock resources to stage:resourceslex.  
   local engines_ is List().
   local ship_ is curr_ship.
 
@@ -146,7 +156,6 @@ function EngineResources {
       v_vec_f,      // final velocity vector
       v_vec_0,      // intial veclotiy vector 
       mass_rate is estimate_mass_rate().
-
 
     local delta_v_vec is v_vec_f - v_vec_0.
     local burn_angle is VAng(delta_v_vec, v_vec_0).

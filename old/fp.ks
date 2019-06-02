@@ -27,14 +27,13 @@ function cast {
   if cast_type="Stack" {
     local stk is stack().
     local temp is stack().
-    set result to stack().
     for element in collection {
       temp:push(element).
     }
     for element in temp {
       stk:push(element).
     }
-    return l.
+    return stk.
   }
 }
 
@@ -250,7 +249,7 @@ function partition{
     collection,
     condition.
 
-  local lst is to_lst(collection).
+  local lst is to_list(collection).
   local result is list(list(), list()).
 
   for i in lst {
@@ -287,7 +286,7 @@ function reject {
     
   local result is list().
   for element in collection {
-    if not condition(element) result:add(i).
+    if not condition(element) result:add(element).
   }
   return cast(result, collection:typename).
 }
@@ -308,7 +307,7 @@ function reverse{
 // Fill lexicon with value
 function lex_fill {
   parameter
-    keys.
+    keys,
     fill.
 
   local result is lexicon().
@@ -316,7 +315,7 @@ function lex_fill {
     result:add(key, fill).
   }
 
-  return key.
+  return result.
 }
 
 

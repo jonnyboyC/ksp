@@ -1,6 +1,6 @@
 @lazyglobal off.
 
-parameter dependencyDrive is 0.
+parameter dependency_drive is 0.
 
 // This is to indicate to the vscode extension where the files are nominally located
 if false {
@@ -11,18 +11,18 @@ if false {
 }
 
 // select which drive to actually load
-if (dependencyDrive <> -1) {
-	RunOncePath(dependencyDrive:tostring() + ":/utilities/engineResources.ks").
-	RunOncePath(dependencyDrive:tostring() + ":/utilities/drawVectors.ks").
-	RunOncePath(dependencyDrive:tostring() + ":/flightParameters/otherParameters.ks").
-	RunOncePath(dependencyDrive:tostring() + ":/flightParameters/orbitalParameters.ks").
+if (dependency_drive <> -1) {
+	RunOncePath(dependency_drive:tostring() + ":/utilities/engineResources.ks").
+	RunOncePath(dependency_drive:tostring() + ":/utilities/drawVectors.ks").
+	RunOncePath(dependency_drive:tostring() + ":/flightParameters/otherParameters.ks").
+	RunOncePath(dependency_drive:tostring() + ":/flightParameters/orbitalParameters.ks").
 }
 
 
 // Pitch control scheme pitch harder as we approach orbital velocity
-function PitchControl {
+function pitchControl {
 	parameter
-		ship,
+		curr_ship,
 		ship_speed,
 		target_orbital_speed.
 
@@ -33,7 +33,7 @@ function PitchControl {
 }
 
 // Ascent control scheme for ascent portion of launch
-function AscentControl {
+function ascentControl {
 	parameter
 		target_apoapsis,
 		launch_direction,
@@ -131,13 +131,12 @@ function CruiseToCircularizationControl {
 		mass_rate,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
 	local vector_manager is 0.
 
 	// if debug draw vectors
-	if debug {
+	if defined debug {
 		set vector_manager to standardvectors().
 	}
 
@@ -204,13 +203,12 @@ function CircularizationControl {
 		mass_rate,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
 	local vector_manager is 0.
 
 	// if debug draw vectors
-	if debug {
+	if defined debug {
 		set vector_manager to standardvectors().
 	}
 

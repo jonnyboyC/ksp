@@ -1,6 +1,6 @@
 @lazyglobal off.
 RunOncePath("./math/universal.ks").
-RunOncePath("./math/newton.ks").
+RunOncePath("./math/root.ks").
 
 local curryUniversalTime is {
   parameter 

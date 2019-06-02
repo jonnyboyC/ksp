@@ -5,12 +5,13 @@ parameter
 	launch_direction is 90,
 	target_apoapsis is 0.
 
-local debug is true.
+global debug is true.
 
 // initialize libraries
 RunOncePath("0:/utilities/utils.ks").
 RunOncePath("0:/flightParameters/orbitalParameters.ks").
-RunOncePath("0:/scripts/scriptHelpers/launchControls.ks").
+runOncePath("0:/scripts/scriptHelpers/ascend.ks").
+runOncePath("0:/scripts/scriptHelpers/circularize.ks").
 RunOncePath("0:/utilities/engineResources.ks").
 clearscreen.
 
@@ -38,25 +39,15 @@ local mass_rate is AscentControl(
 	launch_direction,
 	engine_resources,
 	update_status,
-	update_status_message,
-	debug
+	update_status_message
 ).
 ClearStatusWindowOther().
 
-CruiseToCircularizationControl(
+CircularizationControl(
 	mass_rate,
 	engine_resources,
 	update_status,
-	update_status_message,
-	debug
-).
-
-CircularizationControl (
-	mass_rate,
-	engine_resources,
-	update_status,
-	update_status_message,
-	debug
+	update_status_message
 ).
 
 wait 1.

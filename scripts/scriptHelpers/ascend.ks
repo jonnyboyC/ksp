@@ -1,9 +1,9 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter path is "". RunOncePath("0:" + path).}.
+  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
 
-// Declare dependecies
+// For Vscode
 if false {
 	RunOncePath("0:/utilities/engineResources.ks").
 	RunOncePath("0:/utilities/drawVectors.ks").
@@ -30,7 +30,7 @@ function PitchControl {
 }
 
 // Ascent control scheme for ascent portion of launch
-function AscentControl {
+function ascentControl {
 	parameter
 		target_apoapsis,
 		launch_direction,
