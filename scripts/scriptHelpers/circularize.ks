@@ -1,7 +1,8 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter file_path. runOncePath("0:/" + file_path). }.
+  import is { parameter file_path. runOncePath("0:/" + file_path). },
+	parameters is list().
 
 // For Vscode
 if false {
@@ -20,29 +21,26 @@ import("flightParameters/orbitalParameters.ks").
 // circularize the current craft to it's current apoapsis
 function circularizationControl {
   parameter
-		mass_rate is 0,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
-  circularizationCoastControl(mass_rate, engine_resources, update_func, update_status_func, debug).
-  circularizationBurnControl(mass_rate, engine_resources, update_func, update_status_func, debug).
+  circularizationCoastControl(engine_resources, update_func, update_status_func).
+  circularizationBurnControl(engine_resources, update_func, update_status_func).
 }
 
 // Control scheme for cruising to circularization burn
 local function circularizationCoastControl {
 	parameter
-		mass_rate is 0,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
+	local mass_rate is 0.
 	local vector_manager is 0.
 
 	// if debug draw vectors
-	if debug {
+	if defined debug {
 		set vector_manager to standardvectors().
 	}
 
@@ -58,7 +56,6 @@ local function circularizationCoastControl {
 	// estimate burn dv
 	local burn_dv is v_f_vec - v_0_vec.
 	local burn is engine_resources["estimate_burn"](v_f_vec, v_0_vec, mass_rate).
-	local burn_time is burn["time"].
 	local burn_start is burn["start"].
 
 	// warp near to apoapsis if no atmosphere exists
@@ -79,7 +76,6 @@ local function circularizationCoastControl {
 	set steering_control to -burn_dv.
 
 	set burn to engine_resources["estimate_burn"](v_f_vec, v_0_vec, mass_rate).
-  set burn_time to burn["time"].
 	set burn_start to burn["start"].
 
 	update_status_func("Aligning to circularization burn").
@@ -94,7 +90,7 @@ local function circularizationCoastControl {
 		update_func().
 	}
 
-	if debug {
+	if defined debug {
 		vector_manager["clear"]().
 		set vector_manager to 0.
 	}
@@ -107,16 +103,15 @@ local function circularizationCoastControl {
 // Control scheme for burn to circularize
 local function circularizationBurnControl {
 	parameter
-		mass_rate is 0,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
+	local mass_rate is 0.
 	local vector_manager is 0.
 
 	// if debug draw vectors
-	if debug {
+	if defined debug {
 		set vector_manager to standardvectors().
 	}
 
@@ -148,7 +143,7 @@ local function circularizationBurnControl {
 			).
 		}
 
-		if debug {
+		if defined debug {
 			vector_manager["show"]().
 		}
 
@@ -169,11 +164,15 @@ local function circularizationBurnControl {
 	set ship:control:pilotMainThrottle to 0.0. 
 	wait 0.
 
-	if debug {
+	if defined debug {
 		vector_manager["clear"]().
 		set vector_manager to 0.
 	}
 
 	unlock throttle.
 	unlock steering.
+}
+
+if parameters:length > 0 {
+	circularizationControl(parameters[0], parameters[1], parameters[2]).
 }

@@ -1,7 +1,8 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter file_path. runOncePath("0:/" + file_path). }.
+  import is { parameter file_path. runOncePath("0:/" + file_path). },
+	parameters is list().
 
 // For Vscode
 if false {
@@ -32,12 +33,11 @@ function pitchControl {
 // Ascent control scheme for ascent portion of launch
 function ascentControl {
 	parameter
-		target_apoapsis,
-		launch_direction,
+		target_apoapsis is 0,
+		launch_direction is 90,
 		engine_resources is EngineResources(ship),
 		update_func is { },
-		update_status_func is { parameter message. },
-		debug is false.
+		update_status_func is { parameter message. }.
 
 	// gear off when over 300
 	when alt:radar > 300 then {
@@ -47,14 +47,16 @@ function ascentControl {
 	local vector_manager is 0.
 
 	// if debug draw vectors
-	if debug {
+	if defined debug {
 		set vector_manager to standardvectors().
 	}
 
 	// determine vecloity for circular opbit at a given apoapsis
-	local target_orbital_speed is CircularOrbitVelocity(
+	local target_orbital_speed is circularOrbitVelocity(
 		target_apoapsis + ship:body:radius,
-		ship:body:mu
+		ship:body:mu,
+		positionAtApoapsisShip(),
+		angularMomentumShip()
 	).
 
 	local pitch is 90.
@@ -78,7 +80,7 @@ function ascentControl {
 
 		// update status
 		update_func().
-		if debug {
+		if defined debug {
 			vector_manager["show"]().
 		}
 
@@ -103,15 +105,12 @@ function ascentControl {
 		wait 0.
 	}
 
-	// calculate curren mass burn rate
-	local mass_rate is engine_resources["mass_rate"]().
-
 	// set throttle to 0 and wait a tick to ensure it's applied
 	set throttle_control to 0.
 	wait 0.
 
 	// clear vectors if enabled
-	if debug {
+	if defined debug {
 		vector_manager["clear"]().
 		set vector_manager to 0.
 	}
@@ -119,5 +118,8 @@ function ascentControl {
 	// unlock controls
 	unlock throttle.
 	unlock steering.
-	return mass_rate.
+}
+
+if parameters:length > 0 {
+	ascentControl(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]).
 }

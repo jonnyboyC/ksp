@@ -1,4 +1,17 @@
 
+parameter 
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
+
+// For Vscode
+if false {
+	RunOncePath("0:/utilities/engineResources.ks").
+	RunOncePath("0:/utilities/statusWindow.ks").
+}
+
+// import dependencies
+import("utilities/engineResources.ks").
+import("utilities/statusWindow.ks").
+
 // mission keys
 global copy_dependencies_key is "copyDependencies".
 global run_key is "run".
@@ -19,37 +32,6 @@ local mission_segments is lexicon(
   circularize_segment, "/scripts/scriptHelpers/circularize.ks"
 ).
 
-// change the provide list of argument to an actual run
-local function runHelper {
-  parameter 
-    full_path is "",
-    parameters is list().
-
-  print("full_path " + full_path).
-  print("parameters " + parameters:join(", ")).
-
-  if parameters:length = 0 {
-    runPath(full_path).
-    return.
-  }
-  if parameters:length = 1 {
-    runPath(full_path, parameters[0]).
-    return.
-  }
-  if parameters:length = 2 {
-    runPath(full_path, parameters[0], parameters[1]).
-    return.
-  }
-  if parameters:length = 3 {
-    runPath(full_path, parameters[0], parameters[1], parameters[2]).
-    return.
-  }
-  if parameters:length = 4 {
-    runPath(full_path, parameters[0], parameters[1], parameters[2], parameters[3]).
-    return.
-  }
-}
-
 // Mission class
 function MissionRunner {
   parameter segments is list().
@@ -63,11 +45,17 @@ function MissionRunner {
     run_key, run@
   ).
 
-  local function loader { 
+  local function dependencyLoader { 
     parameter file_path.
     
     instance[dependencies_key]:add(file_path).
     runOncePath("0:/" + file_path).
+  }
+
+  local function normalLoader { 
+    parameter file_path.
+    
+    runOncePath(instance[drive_key] + ":/" + file_path).
   }
 
   // add each segment
@@ -123,7 +111,7 @@ function MissionRunner {
       local file_path is resolvePath(0, segment_path).
 
       // run with dependency loading to gather dependencies
-      runOncePath(file_path, loader@).
+      runOncePath(file_path, dependencyLoader@).
       instance[dependencies_key]:add(segment_path).
     }
 
@@ -142,8 +130,18 @@ function MissionRunner {
 
     // for each mission segment determine dependencies
     for i in range(instance[segments_key]:length) {
+      clearScreen.
       local segment is instance[segments_key][i].
-      local parameters is instance[parameters_key][i].
+      printStatusWindow(segment, version).
+
+      local parameters is list().
+      for param in instance[parameters_key][i] {
+        parameters:add(param).
+      }
+
+      parameters:add(EngineResources(ship)).
+      parameters:add(updateStatusWindow@).
+      parameters:add(updateStatusWindowMessage@).
 
       // check if we have mission segment in our lex
       if not mission_segments:hasKey(segment) {
@@ -154,7 +152,7 @@ function MissionRunner {
       local segment_path is mission_segments[segment].
       local file_path is resolvePath(instance[drive_key], segment_path).
 
-      runHelper(file_path, parameters).
+      runPath(file_path, normalLoader@, parameters).
     }
   }
 
