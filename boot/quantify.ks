@@ -13,7 +13,7 @@ print("boot quantity").
 wait 3.
 
 switch to 0.
-runPath("0:/scripts/quantifyShip.ks", "1:/ship.json").
+runOncePath("0:/scripts/quantifyShip.ks").
 
 switch to 1.
 SET ship:control:mainThrottle TO 0.

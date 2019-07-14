@@ -1,7 +1,7 @@
-local stagesKey is "stages".
-local addPartKey is "addPart".
-local toJsonKey is "toJson".
-local fromJsonKey is "fromJson".
+global stagesKey is "stages".
+global addPartKey is "addPart".
+global toJsonKey is "toJson".
+global fromJsonKey is "fromJson".
 
 local dryMassKey is "dryMass".
 local wetMassKey is "wetMass".
@@ -72,6 +72,8 @@ function shipResources {
   local function toJson {
     parameter jsonPath is "".
 
+    print(jsonPath).
+    // print(instance[stagesKey]).
     writeJson(instance[stagesKey], jsonPath).
   }
 

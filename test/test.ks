@@ -1,14 +1,6 @@
-function main {
-  function func {
-    return "function".
-  }
+// function func {
+//   .
+// }
 
-  parameter func is "parameter".
-  local func is "variable".
-  local func is { return "delegate". }.
-  lock func to "lock".
-
-  print(func).
-}
-
-main().
+local func is "var".
+unset func.

@@ -1,16 +1,16 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
 
 // For Vscode
 if false {
-  RunOncePath("0:/math/root.ks").
+  RunOncePath("0:/math/roots.ks").
   RunOncePath("0:/utilities/fp.ks").
 }
 
 // import dependencies
-import("/math/root.ks").
+import("/math/roots.ks").
 import("/utilities/fp.ks").
 
 // fuel types

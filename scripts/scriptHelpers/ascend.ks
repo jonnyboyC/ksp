@@ -1,7 +1,7 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
 
 // For Vscode
 if false {
@@ -11,13 +11,13 @@ if false {
 }
 
 // import dependencies
-import("/utilities/engineResources.ks").
-import("/utilities/drawVectors.ks").
-import("/flightParameters/orbitalParameters.ks").
+import("utilities/engineResources.ks").
+import("utilities/drawVectors.ks").
+import("flightParameters/orbitalParameters.ks").
 
 
 // Pitch control scheme pitch harder as we approach orbital velocity
-function PitchControl {
+function pitchControl {
 	parameter
 		curr_ship is ship,
 		ship_speed is 0,
@@ -91,7 +91,7 @@ function ascentControl {
 
 		// else use pitch control
 		} else {
-			set pitch to PitchControl(ship, speed, target_orbital_speed:mag).
+			set pitch to pitchControl(ship, speed, target_orbital_speed:mag).
 
 			// minimum pitch
 			if pitch < 5 {

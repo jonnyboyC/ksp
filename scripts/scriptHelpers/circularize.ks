@@ -1,19 +1,21 @@
 @lazyglobal off.
 
 parameter 
-  import is { parameter file_path. return runOncePath("0:/" + file_path). }.
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
 
 // For Vscode
 if false {
 	RunOncePath("0:/utilities/engineResources.ks").
 	RunOncePath("0:/utilities/drawVectors.ks").
 	RunOncePath("0:/flightParameters/orbitalParameters.ks").
+	runOncePath("0:/utilities/utils.ks").
 }
 
 // import dependencies
-import("/utilities/engineResources.ks").
-import("/utilities/drawVectors.ks").
-import("/flightParameters/orbitalParameters.ks").
+import("utilities/engineResources.ks").
+import("utilities/drawVectors.ks").
+import("utilities/utils.ks").
+import("flightParameters/orbitalParameters.ks").
 
 // circularize the current craft to it's current apoapsis
 function circularizationControl {
@@ -50,8 +52,8 @@ local function circularizationCoastControl {
 	lock throttle to throttle_control.
 	lock steering to steering_control.
 
-	local v_f_vec is CircularOrbitVelocityShip().
-	local v_0_vec is VelocityAtApoapsisShip().
+	local v_f_vec is circularOrbitVelocityShip().
+	local v_0_vec is velocityAtApoapsisShip().
 
 	// estimate burn dv
 	local burn_dv is v_f_vec - v_0_vec.
@@ -62,7 +64,7 @@ local function circularizationCoastControl {
 	// warp near to apoapsis if no atmosphere exists
 	if not ship:body:atm:exists {
 		local warp_time is (eta:apoapsis - (burn_start + 60)).
-		WarpTo(warp_time, update_status_func).
+		warpTime(warp_time, update_status_func).
 	}
 
 	until (eta:apoapsis <= (burn_start + 60)) {
@@ -70,8 +72,8 @@ local function circularizationCoastControl {
 		wait 0.
 	}
 
-	set v_f_vec to CircularOrbitVelocityShip().
-	set v_0_vec to VelocityAtApoapsisShip().
+	set v_f_vec to circularOrbitVelocityShip().
+	set v_0_vec to velocityAtApoapsisShip().
 
 	set burn_dv to v_f_vec - v_0_vec.
 	set steering_control to -burn_dv.
@@ -118,8 +120,8 @@ local function circularizationBurnControl {
 		set vector_manager to standardvectors().
 	}
 
-	local v_f_vec is CircularOrbitVelocityShip().
-	local v_0_vec is VelocityAtApoapsisShip().
+	local v_f_vec is circularOrbitVelocityShip().
+	local v_0_vec is velocityAtApoapsisShip().
 
 	// estimate burn dv
 	local burn_dv is v_f_vec - v_0_vec.

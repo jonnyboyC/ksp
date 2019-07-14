@@ -1,6 +1,16 @@
 @lazyglobal off.
-RunOncePath("0:/utilities/engineResources.ks").
-RunOncePath("0:/utilities/utils.ks").
+
+parameter 
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
+
+// For Vscode
+if false {
+  runOncePath("0:/utilities/engineResources.ks").
+  runOncePath("0:/utilities/utils.ks").
+}
+
+import("utilities/engineResources.ks").
+import("utilities/utils.ks").
 
 parameter nodesToExecute is 20.
 

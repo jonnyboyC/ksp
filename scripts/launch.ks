@@ -26,7 +26,7 @@ if target_apoapsis = 0 {
 }
 
 // Print status
-PrintStatusWindow("launch.ks", version).
+printStatusWindow("launch.ks", version).
 
 // Console Count Down
 CountDown(10, update_status_message).

@@ -97,7 +97,7 @@ function angularMomentum {
 }
 
 // node vector of the current ship
-function NodeVectorShip {
+function nodeVectorShip {
   local h_vec is AngularMomentumShip().
   return NodeVector(h_vec).
 }

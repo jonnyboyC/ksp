@@ -1,9 +1,7 @@
 @lazyglobal off.
 
-// require import
-if not defined import {
-	print("import not found please globally define import").
-}
+parameter 
+  import is { parameter file_path. runOncePath("0:/" + file_path). }.
 
 // For Vscode
 if false {
