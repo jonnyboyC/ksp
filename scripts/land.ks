@@ -20,8 +20,9 @@ import("scripts/missionRunner.ks").
 import("utilities/utils.ks").
 
 local runner is MissionRunner(list(
-  list(ascend_segment, arguments),
-  list(circularize_segment, list())
+  list(selectLandingSegment, list(DefaultLaunchApoapsis(ship:body), 90)),
+  list(deorbitSegment, list()),
+  list(landSegment, list())
 )).
 
 // runner[copy_dependencies_key](1).

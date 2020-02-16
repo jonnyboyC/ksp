@@ -7,7 +7,7 @@ function Lambert {
     r_vec2,
     time_of_flight,
     max_rotations,
-    mu
+    mu.
 
   local r1 is r_vec1:norm.
   local r2 is r_vec2:norm.
@@ -26,11 +26,11 @@ function Lambert {
   local lambda is sqrt(lambda2).
 
   if h < 0 {
-    tangent1 to VCrs(r_vec1_unit, h_vec).
-    tangent2 to VCrs(r_vec2_unit, h_vec).
+    set tangent1 to VCrs(r_vec1_unit, h_vec).
+    set tangent2 to VCrs(r_vec2_unit, h_vec).
   } else {
-    tangent1 to VCrs(h_vec, r_vec1_unit).
-    tangent2 to VCrs(h_vec, r_vec2_unit).
+    set tangent1 to VCrs(h_vec, r_vec1_unit).
+    set tangent2 to VCrs(h_vec, r_vec2_unit).
   }
 
   set tangent1 to tangent1:normalized.
@@ -43,7 +43,7 @@ function Lambert {
   }
 
   local lambda3 is lambda * lambda2.
-  local T = sqrt(2 * mu / s^3) * time_of_flight.
+  local T is sqrt(2 * mu / s^3) * time_of_flight.
 
   set max_rotations to min(max_revolutions, HaileyIteration(T, lambda, lambda2, lambda3)).
 }
@@ -55,7 +55,7 @@ function HaileyIteration {
     lambda2,
     lambda3.
 
-  local max_revolutions = T / constant:pi.
+  local max_revolutions is T / constant:pi.
   
   local T00 is arccos(lambda) + lambda * sqrt(1 - lambda2).
   local T0 is T00 + max_revolutions * constant:pi.
@@ -63,14 +63,14 @@ function HaileyIteration {
   local dt is 0.
   local dTdx is 0.
   local d2Tdx2 is 0.
-  local d3Tdx3 is 0
+  local d3Tdx3 is 0.
 
   if max_revolutions > 0 and T < T0 {
     local iter is 0.
     local error is 1.
     local T_min is T0.
     local x_old is 0.
-    local x is 0
+    local x is 0.
 
     until false {
       set dt to TDerivatives(lambda, x_old, T_min).
@@ -79,12 +79,12 @@ function HaileyIteration {
       set d3Tdx3 to dt[2].
 
       if dTdx <> 0 {
-        set x = x_old - dTdx * d2Tdx2 / (d2Tdx2 ^ 2 - dTdx * d3Tdx3 / 2).
+        set x to x_old - dTdx * d2Tdx2 / (d2Tdx2 ^ 2 - dTdx * d3Tdx3 / 2).
       }
 
       set error to abs(x_old - x).
       if error < 1e-13 or iter > 12 {
-        break;
+        break.
       }
 
       set T_min to TimeOfFlight(x, lambda, max_revolutions).
@@ -203,7 +203,7 @@ function hyperGeometricFunction {
   parameter
     a, 
     b, 
-    c
+    c,
     z,
     tolerance.
 
@@ -213,9 +213,9 @@ function hyperGeometricFunction {
   local i is 0.
 
   until error < tolerance {
-    set sum_i = sum_i * a * b / c * z / i.
+    set sum_i to sum_i * a * b / c * z / i.
     set sum to sum + sum_i.
-    set error = abs(sum_i).
+    set error to abs(sum_i).
 
     set a to a + 1.
     set b to b + 1.

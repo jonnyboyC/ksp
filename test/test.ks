@@ -1,6 +1,15 @@
-// function func {
-//   .
-// }
+local x is "
+BRO you gay
 
-local func is "var".
-unset func.
+
+".
+print(x).
+
+// for i in range(0) {
+//   global function example {
+//     print("hi").
+//   }
+
+//   example().
+// }
+// example().

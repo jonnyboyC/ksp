@@ -57,7 +57,7 @@ function updateStatusWindowOther1 {
 }
 
 // update the second line of the status window
-function UpdateStatusWindowOther2 {
+function updateStatusWindowOther2 {
   parameter
     message.
 
@@ -75,7 +75,7 @@ function updateStatusWindowOther3 {
 // clear status window
 function clearStatusWindowOther {
   updateStatusWindowOther1("").
-  UpdateStatusWindowOther2("").
+  updateStatusWindowOther2("").
   updateStatusWindowOther3("").
 }
 

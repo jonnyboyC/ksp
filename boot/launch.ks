@@ -13,11 +13,11 @@ print("boot launch").
 wait 3.
 
 copyPath("0:/boot/default.ks", "1:/boot/default.ks").
-deletepath("1:/boot/launch.ks").
+deletepath("1:/boot/launch_new.ks").
 set cpu:bootFilename to "/boot/default.ks".
 
 switch to 0.
-runPath("0:/scripts/launch.ks").
+runPath("0:/scripts/launch_new.ks").
 
 switch to 1.
 SET ship:control:mainThrottle TO 0.

@@ -19,6 +19,9 @@ global run_key is "run".
 // available segments
 global ascend_segment is "ascend".
 global circularize_segment is "circularize".
+global selectLandingSegment is "selectLanding".
+global deorbitSegment is "deorbit".
+global landSegment is "land".
 
 // internal keys
 local dependencies_key is "dependencies".
@@ -29,7 +32,10 @@ local parameters_key is "parameters".
 // available mission segments
 local mission_segments is lexicon(
   ascend_segment, "/scripts/scriptHelpers/ascend.ks",
-  circularize_segment, "/scripts/scriptHelpers/circularize.ks"
+  circularize_segment, "/scripts/scriptHelpers/circularize.ks",
+  selectLandingSegment, "/scripts/scriptHelpers/selectLanding.ks",
+  deorbitSegment, "/scripts/scriptHelpers/deorbit.ks",
+  landSegment, "/scripts/scriptHelpers/land.ks"
 ).
 
 // Mission class

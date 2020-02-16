@@ -51,7 +51,7 @@ function ascentControl {
 		set vector_manager to standardvectors().
 	}
 
-	// determine vecloity for circular opbit at a given apoapsis
+	// determine velocity for circular opbit at a given apoapsis
 	local target_orbital_speed is circularOrbitVelocity(
 		target_apoapsis + ship:body:radius,
 		ship:body:mu,
